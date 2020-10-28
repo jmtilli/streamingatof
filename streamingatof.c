@@ -87,6 +87,14 @@ static inline double streaming_atof_ctx_get_number(struct streaming_atof_ctx *ct
 	{
 		return atof(ctx->buf);
 	}
+
+	if (ctx->bufsiz == 0 || (ctx->bufsiz == 1 && ctx->buf[0] == '-'))
+	{
+		ctx->buf[ctx->bufsiz++] = '0';
+		ctx->buf[ctx->bufsiz++] = '.';
+		ctx->buf[ctx->bufsiz++] = '0';
+	}
+
 	ctx->buf[ctx->bufsiz++] = 'e';
 	if (ctx->exponent_offset > 999)
 	{
