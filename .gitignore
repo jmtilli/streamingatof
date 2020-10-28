@@ -1,0 +1,6 @@
+/.stir.db
+/libstreamingatof.a
+/test
+*.d
+*.o
+*.c
