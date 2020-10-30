@@ -82,6 +82,7 @@ static inline double streaming_atof_ctx_get_number(struct streaming_atof_ctx *ct
 	if (!ctx->exponent_offset_set)
 	{
 		streaming_atof_ctx_store_period(ctx);
+		streaming_atof_ctx_emit_digit(ctx, '0');
 	}
 	if (ctx->bufsiz == -1)
 	{
@@ -168,6 +169,11 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 		{
 			if (data[i] == 'e' || data[i] == 'E')
 			{
+				if (!ctx->exponent_offset_set)
+				{
+					streaming_atof_ctx_store_period(ctx);
+					streaming_atof_ctx_emit_digit(ctx, '0');
+				}
 				ctx->mode = STREAMING_ATOF_MODE_EXPONENT_SIGN;
 				continue;
 			}
@@ -193,6 +199,11 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 			}
 			if (data[i] == 'e' || data[i] == 'E')
 			{
+				if (!ctx->exponent_offset_set)
+				{
+					streaming_atof_ctx_store_period(ctx);
+					streaming_atof_ctx_emit_digit(ctx, '0');
+				}
 				ctx->mode = STREAMING_ATOF_MODE_EXPONENT_SIGN;
 				continue;
 			}
@@ -213,6 +224,11 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 			}
 			if (data[i] == 'e' || data[i] == 'E')
 			{
+				if (!ctx->exponent_offset_set)
+				{
+					streaming_atof_ctx_store_period(ctx);
+					streaming_atof_ctx_emit_digit(ctx, '0');
+				}
 				ctx->mode = STREAMING_ATOF_MODE_EXPONENT_SIGN;
 				continue;
 			}
