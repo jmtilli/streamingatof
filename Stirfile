@@ -30,4 +30,7 @@ $(PROG) = @sufsuball($(SRC_PROG), ".c", "")
 @	["rm", "-f", $@]
 @	["ar", "rvs", $@, @@suffilter($^, ".o")]
 
+'unit': 'test'
+@	["./test"]
+
 @cdepincludes @autophony @autotarget @ignore [@$(DEP)]
