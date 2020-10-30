@@ -31,7 +31,7 @@ struct streaming_atof_ctx {
 static inline void streaming_atof_init(struct streaming_atof_ctx *ctx)
 {
 	ctx->bufsiz = 0;
-	ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FIRST;
+	ctx->mode = STREAMING_ATOF_MODE_MANTISSA_SIGN;
 	ctx->exponent_offset = 0;
 	ctx->exponent_offset_set = 0;
 	ctx->skip_offset = 0;

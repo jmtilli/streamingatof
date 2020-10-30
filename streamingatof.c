@@ -146,10 +146,20 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 	{
 		//printf("char %c intermediate: %.20Lg\n", data[i], ctx->d);
 		//printf("char %c intermediate: %.20g %.20g %d %d %d\n", data[i], ctx->d1, ctx->d2, ctx->add_exponent1, ctx->add_exponent2, ctx->sub_exponent);
-		if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_FIRST && data[i] == '-')
+		if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_SIGN && data[i] == '+')
+		{
+			ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FIRST;
+			continue;
+		}
+		if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_SIGN && data[i] == '-')
 		{
 			streaming_atof_ctx_mark_negative(ctx);
+			ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FIRST;
 			continue;
+		}
+		if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_SIGN && isdigit(data[i]))
+		{
+			ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FIRST;
 		}
 		if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_FIRST && data[i] == '0')
 		{
