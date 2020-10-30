@@ -119,7 +119,7 @@ static void test_string(const char *str)
 int main(int argc, char **argv)
 {
 	double d;
-	size_t iter;
+	size_t iter, fmtiter;
 	int exponent;
 	char buf[1024];
 	const char *random_fmt;
@@ -397,6 +397,30 @@ int main(int argc, char **argv)
 
 
 	srand48(1);
+	for (iter = 0; iter < 10*1000; iter++)
+	{
+		d = iter;
+		test_number(d);
+		test_number(-d);
+		if (iter % 100 == 0)
+		{
+			printf("thorough int %zu\n", iter);
+		}
+		for (fmtiter = 0; fmtiter < sizeof(random_fmts)/sizeof(*random_fmts); fmtiter++)
+		{
+			random_fmt = random_fmts[fmtiter];
+			if (snprintf(buf, sizeof(buf), random_fmt, d) >= (int)sizeof(buf))
+			{
+				abort();
+			}
+			test_string(buf);
+			if (snprintf(buf, sizeof(buf), random_fmt, -d) >= (int)sizeof(buf))
+			{
+				abort();
+			}
+			test_string(buf);
+		}
+	}
 	for (iter = 0; iter < 10*1000*1000; iter++)
 	{
 		d = iter;
@@ -404,8 +428,19 @@ int main(int argc, char **argv)
 		test_number(-d);
 		if (iter % 100000 == 0)
 		{
-			printf("int %zu\n", iter);
+			printf("less thorough int %zu\n", iter);
 		}
+		random_fmt = random_fmts[((unsigned)rand()) % (sizeof(random_fmts)/sizeof(*random_fmts))];
+		if (snprintf(buf, sizeof(buf), random_fmt, d) >= (int)sizeof(buf))
+		{
+			abort();
+		}
+		test_string(buf);
+		if (snprintf(buf, sizeof(buf), random_fmt, -d) >= (int)sizeof(buf))
+		{
+			abort();
+		}
+		test_string(buf);
 	}
 	for (iter = 0; iter < 100*1000*1000; iter++)
 	{
