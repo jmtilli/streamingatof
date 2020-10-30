@@ -111,7 +111,7 @@ static inline double streaming_atof_ctx_get_number(struct streaming_atof_ctx *ct
 		abort();
 	}
 	nch = snprintf(ctx->buf + ctx->bufsiz, (size_t)remain, "%.3d", (int)ctx->exponent_offset);
-	if (ctx->bufsiz + nch >= ((int)sizeof(ctx->buf)) - 1)
+	if (ctx->bufsiz + nch >= ((int)sizeof(ctx->buf)))
 	{
 		abort();
 	}
