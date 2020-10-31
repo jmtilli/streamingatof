@@ -1,6 +1,7 @@
 #ifndef _STREAMINGATOF_H_
 #define _STREAMINGATOF_H_ 1
 
+#include <stdio.h>
 #include <stdint.h>
 
 enum streaming_atof_mode {
