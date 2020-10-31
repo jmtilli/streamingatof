@@ -195,21 +195,21 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 		}
 		if ((ctx->mode == STREAMING_ATOF_MODE_MANTISSA || ctx->mode == STREAMING_ATOF_MODE_MANTISSA_FIRST))
 		{
-			ctx->mode = STREAMING_ATOF_MODE_MANTISSA;
 			if (isdigit(data[i]))
 			{
 				streaming_atof_ctx_emit_digit(ctx, data[i]);
+				ctx->mode = STREAMING_ATOF_MODE_MANTISSA;
 				continue;
-			}
-			if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_FIRST)
-			{
-				abort();
 			}
 			if (data[i] == '.')
 			{
 				streaming_atof_ctx_store_period(ctx);
 				ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FRAC_FIRST;
 				continue;
+			}
+			if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_FIRST)
+			{
+				abort();
 			}
 			if (data[i] == 'e' || data[i] == 'E')
 			{
@@ -232,10 +232,13 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 				ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FRAC;
 				continue;
 			}
+			// Let's accept "1." and "1.e2"
+			/*
 			if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_FRAC_FIRST)
 			{
 				abort();
 			}
+			*/
 			if (data[i] == 'e' || data[i] == 'E')
 			{
 				if (!ctx->exponent_offset_set)
@@ -295,7 +298,6 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 			{
 				abort();
 			}
-			streaming_atof_ctx_set_exponent(ctx, ctx->expnegative ? (-ctx->exponent) : ctx->exponent);
 			ctx->mode = STREAMING_ATOF_MODE_DONE;
 			return (ssize_t)i;
 		}
