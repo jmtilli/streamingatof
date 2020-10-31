@@ -79,6 +79,10 @@ static inline void streaming_atof_ctx_set_exponent(struct streaming_atof_ctx *ct
 static inline double streaming_atof_ctx_get_number(struct streaming_atof_ctx *ctx)
 {
 	int nch;
+	if (ctx->mode == STREAMING_ATOF_MODE_ERROR)
+	{
+		abort();
+	}
 	if (!ctx->exponent_offset_set)
 	{
 		streaming_atof_ctx_store_period(ctx);
@@ -136,9 +140,9 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 	{
 		abort();
 	}
-	if (ctx->mode == STREAMING_ATOF_MODE_DONE)
+	if (ctx->mode == STREAMING_ATOF_MODE_DONE || ctx->mode == STREAMING_ATOF_MODE_ERROR)
 	{
-		abort();
+		return 0;
 	}
 
 	size_t i;
@@ -191,7 +195,8 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 				ctx->mode = STREAMING_ATOF_MODE_EXPONENT_SIGN;
 				continue;
 			}
-			abort();
+			ctx->mode = STREAMING_ATOF_MODE_ERROR;
+			return (ssize_t)i;
 		}
 		if ((ctx->mode == STREAMING_ATOF_MODE_MANTISSA || ctx->mode == STREAMING_ATOF_MODE_MANTISSA_FIRST))
 		{
@@ -209,7 +214,8 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 			}
 			if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_FIRST)
 			{
-				abort();
+				ctx->mode = STREAMING_ATOF_MODE_ERROR;
+				return (ssize_t)i;
 			}
 			if (data[i] == 'e' || data[i] == 'E')
 			{
@@ -236,7 +242,8 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 			/*
 			if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_FRAC_FIRST)
 			{
-				abort();
+				ctx->mode = STREAMING_ATOF_MODE_ERROR;
+				return (ssize_t)i;
 			}
 			*/
 			if (data[i] == 'e' || data[i] == 'E')
@@ -278,7 +285,8 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 				ctx->mode = STREAMING_ATOF_MODE_EXPONENT;
 				continue;
 			}
-			abort();
+			ctx->mode = STREAMING_ATOF_MODE_ERROR;
+			return (ssize_t)i;
 		}
 		if (ctx->mode == STREAMING_ATOF_MODE_EXPONENT_FIRST || ctx->mode == STREAMING_ATOF_MODE_EXPONENT)
 		{
@@ -296,12 +304,14 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 			}
 			if (ctx->mode == STREAMING_ATOF_MODE_EXPONENT_FIRST)
 			{
-				abort();
+				ctx->mode = STREAMING_ATOF_MODE_ERROR;
+				return (ssize_t)i;
 			}
 			ctx->mode = STREAMING_ATOF_MODE_DONE;
 			return (ssize_t)i;
 		}
-		abort();
+		ctx->mode = STREAMING_ATOF_MODE_ERROR;
+		return (ssize_t)i;
 	}
 	return (ssize_t)len;
 }
