@@ -157,6 +157,10 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 			ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FIRST;
 			continue;
 		}
+		if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_SIGN && data[i] == '.')
+		{
+			ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FIRST;
+		}
 		if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_SIGN && isdigit(data[i]))
 		{
 			ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FIRST;
