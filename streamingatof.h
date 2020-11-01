@@ -23,14 +23,15 @@ struct streaming_atof_ctx {
 	char buf[64];
 	int bufsiz;
 	enum streaming_atof_mode mode;
-	int exponent_offset_set;
 	int64_t exponent_offset;
 	int64_t skip_offset;
 	int64_t exponent;
-	int expnegative;
+	unsigned exponent_offset_set:1;
+	unsigned expnegative:1;
+	unsigned strict_json:1;
 };
 
-static inline void streaming_atof_init(struct streaming_atof_ctx *ctx)
+static inline void streaming_atof_init_ex(struct streaming_atof_ctx *ctx, int strict_json)
 {
 	ctx->bufsiz = 0;
 	ctx->mode = STREAMING_ATOF_MODE_MANTISSA_SIGN;
@@ -39,6 +40,15 @@ static inline void streaming_atof_init(struct streaming_atof_ctx *ctx)
 	ctx->skip_offset = 0;
 	ctx->exponent = 0;
 	ctx->expnegative = 0;
+	ctx->strict_json = !!strict_json;
+}
+static inline void streaming_atof_init(struct streaming_atof_ctx *ctx)
+{
+	streaming_atof_init_ex(ctx, 0);
+}
+static inline void streaming_atof_init_strict_json(struct streaming_atof_ctx *ctx)
+{
+	streaming_atof_init_ex(ctx, 1);
 }
 
 static inline int streaming_atof_is_error(struct streaming_atof_ctx *ctx)

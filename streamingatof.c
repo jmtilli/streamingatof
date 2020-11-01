@@ -150,7 +150,7 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 	{
 		//printf("char %c intermediate: %.20Lg\n", data[i], ctx->d);
 		//printf("char %c intermediate: %.20g %.20g %d %d %d\n", data[i], ctx->d1, ctx->d2, ctx->add_exponent1, ctx->add_exponent2, ctx->sub_exponent);
-		if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_SIGN && data[i] == '+')
+		if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_SIGN && data[i] == '+' && !ctx->strict_json)
 		{
 			ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FIRST;
 			continue;
@@ -161,7 +161,7 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 			ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FIRST;
 			continue;
 		}
-		if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_SIGN && data[i] == '.')
+		if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_SIGN && data[i] == '.' && !ctx->strict_json)
 		{
 			ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FIRST;
 		}
@@ -238,14 +238,12 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 				ctx->mode = STREAMING_ATOF_MODE_MANTISSA_FRAC;
 				continue;
 			}
-			// Let's accept "1." and "1.e2"
-			/*
-			if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_FRAC_FIRST)
+			// Let's accept "1." and "1.e2" if not strict
+			if (ctx->mode == STREAMING_ATOF_MODE_MANTISSA_FRAC_FIRST && ctx->strict_json)
 			{
 				ctx->mode = STREAMING_ATOF_MODE_ERROR;
 				return (ssize_t)i;
 			}
-			*/
 			if (data[i] == 'e' || data[i] == 'E')
 			{
 				if (!ctx->exponent_offset_set)
