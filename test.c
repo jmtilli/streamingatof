@@ -4,7 +4,7 @@
 #include <math.h>
 #include "streamingatof.h"
 
-static inline double myintpow10(int exponent)
+static double myintpow10(int exponent)
 {
         double a = 1.0;
         double b = 10.0;
@@ -35,11 +35,13 @@ static double my_atof(const char *data)
 	struct streaming_atof_ctx sctx;
 	struct streaming_atof_ctx *ctx = &sctx;
 	int b;
+	size_t len;
+
 	streaming_atof_init(ctx);
 
 	b = (rand()>>6) % 2;
 
-	size_t len = strlen(data);
+	len = strlen(data);
 	if (b)
 	{
 		for (size_t i = 0; i < len; i++)
@@ -509,7 +511,7 @@ int main(int argc, char **argv)
 	srand48(1);
 	for (iter = 0; iter < 10*1000; iter++)
 	{
-		d = iter;
+		d = (double)iter;
 		test_number(d);
 		test_number(-d);
 		if (iter % 100 == 0)
@@ -533,7 +535,7 @@ int main(int argc, char **argv)
 	}
 	for (iter = 0; iter < 10*1000*1000; iter++)
 	{
-		d = iter;
+		d = (double)iter;
 		test_number(d);
 		test_number(-d);
 		if (iter % 100000 == 0)

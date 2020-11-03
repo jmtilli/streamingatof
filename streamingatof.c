@@ -53,6 +53,7 @@ static inline void streaming_atof_ctx_emit_digit(struct streaming_atof_ctx *ctx,
 static inline void streaming_atof_ctx_store_period(struct streaming_atof_ctx *ctx)
 {
 	int periodbufsiz;
+	int curbufsiz;
 	if (ctx->bufsiz == 0 || (ctx->bufsiz == 1 && ctx->buf[0] == '-'))
 	{
 		ctx->exponent_offset = -1;
@@ -68,7 +69,7 @@ static inline void streaming_atof_ctx_store_period(struct streaming_atof_ctx *ct
 	{
 		periodbufsiz = 2;
 	}
-	int curbufsiz = ctx->bufsiz;
+	curbufsiz = ctx->bufsiz;
 	ctx->exponent_offset = curbufsiz - periodbufsiz + ctx->skip_offset;
 	ctx->exponent_offset_set = 1;
 }
@@ -79,6 +80,7 @@ static inline void streaming_atof_ctx_set_exponent(struct streaming_atof_ctx *ct
 static inline double streaming_atof_ctx_get_number(struct streaming_atof_ctx *ctx)
 {
 	int nch;
+	int remain;
 	if (ctx->mode == STREAMING_ATOF_MODE_ERROR)
 	{
 		abort();
@@ -109,7 +111,7 @@ static inline double streaming_atof_ctx_get_number(struct streaming_atof_ctx *ct
 	{
 		ctx->exponent_offset = -999;
 	}
-	int remain = (int)sizeof(ctx->buf);
+	remain = (int)sizeof(ctx->buf);
 	remain -= ctx->bufsiz;
 	if (remain < 0)
 	{
@@ -136,6 +138,7 @@ double streaming_atof_end(struct streaming_atof_ctx *ctx)
 
 ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, size_t len)
 {
+	size_t i;
 	if (len > SSIZE_MAX)
 	{
 		abort();
@@ -145,7 +148,6 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 		return 0;
 	}
 
-	size_t i;
 	for (i = 0; i < len; i++)
 	{
 		//printf("char %c intermediate: %.20Lg\n", data[i], ctx->d);
