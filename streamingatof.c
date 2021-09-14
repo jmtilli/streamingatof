@@ -185,6 +185,11 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 		{
 			ctx->mode = STREAMING_ATOF_MODE_MANTISSA;
 		}
+		else if (ctx->mode == STREAMING_ATOF_MODE_PERIOD_OR_EXPONENT_CHAR && !isdigit(data[i]))
+		{
+			ctx->mode = STREAMING_ATOF_MODE_DONE;
+			return (ssize_t)i;
+		}
 		if (ctx->mode == STREAMING_ATOF_MODE_EXPONENT_CHAR)
 		{
 			if (data[i] == 'e' || data[i] == 'E')
