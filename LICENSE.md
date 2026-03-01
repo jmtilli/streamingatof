@@ -1,4 +1,4 @@
-Copyright (C) 2020 Juha-Matti Tilli
+Copyright (C) 2020-2021,2026 Juha-Matti Tilli
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
