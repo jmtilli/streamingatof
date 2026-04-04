@@ -4,3 +4,5 @@
 *.d
 *.o
 *.c
+/libstreamingatof.so
+/libstreamingatof.so.1

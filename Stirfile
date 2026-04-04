@@ -14,8 +14,11 @@ $(OBJ_LIB) = @sufsuball($(SRC_LIB), ".c", ".o")
 $(OBJ) = @sufsuball($(SRC), ".c", ".o")
 $(DEP) = @sufsuball($(SRC), ".c", ".d")
 $(PROG) = @sufsuball($(SRC_PROG), ".c", "")
+$(RM) = "rm"
+$(LN) = "ln"
+$(LDFLAGS_DYN) = []
 
-@phonyrule: 'all': 'libstreamingatof.a' $(PROG)
+@phonyrule: 'all': 'libstreamingatof.a' 'libstreamingatof.so' 'libstreamingatof.so.1' $(PROG)
 
 @patrule: $(PROG): '%': '%.o' 'libstreamingatof.a'
 @	[$(CC), @$(CFLAGS), "-o", $@, $<, 'libstreamingatof.a']
@@ -29,6 +32,13 @@ $(PROG) = @sufsuball($(SRC_PROG), ".c", "")
 'libstreamingatof.a': $(OBJ_LIB)
 @	["rm", "-f", $@]
 @	["ar", "rvs", $@, @@suffilter($^, ".o")]
+
+'libstreamingatof.so.1': 'libstreamingatof.a'
+@	[$(CC), @$(CFLAGS), "-shared", "-o", $@, "-Wl,--whole-archive", @@suffilter($^, ".a"), "-Wl,--no-whole-archive", @$(LDFLAGS_DYN), "-lc"]
+
+'libstreamingatof.so': 'libstreamingatof.so.1'
+@	[$(RM), "-f", $@]
+@	[$(LN), "-s", $<, $@]
 
 @phonyrule: 'unit': 'test'
 @	["./test"]
