@@ -55,6 +55,10 @@ static inline int streaming_atof_is_error(struct streaming_atof_ctx *ctx)
 {
 	return ctx->mode == STREAMING_ATOF_MODE_ERROR;
 }
+static inline int streaming_atof_is_done(struct streaming_atof_ctx *ctx)
+{
+	return ctx->mode == STREAMING_ATOF_MODE_DONE;
+}
 
 double streaming_atof_end(struct streaming_atof_ctx *ctx);
 
