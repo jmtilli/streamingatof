@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <sys/types.h>
 
 enum streaming_atof_mode {
 	STREAMING_ATOF_MODE_PERIOD_OR_EXPONENT_CHAR,
