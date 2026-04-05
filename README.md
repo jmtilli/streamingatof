@@ -56,15 +56,6 @@ pathological number. Thus, it is unlikely such numbers will ever be encountered
 in practice. Such a number does not crash the library; instead, an incorrect
 number will merely be returned with no other ill effects.
 
-## Caveats
-
-It is expected that the user of the library never feeds invalid data into the
-streaming atof library. Thus, any user who would like to parse numbers whose
-textual representation is not a valid JSON number should validate the data
-before feeding in to the library.
-
-Failure to check the validity of data can lead to an `abort()`.
-
 ## How to build
 
 Streaming atof is built using Stirmake. How to install it:
