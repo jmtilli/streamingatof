@@ -141,7 +141,7 @@ ssize_t streaming_atof_feed(struct streaming_atof_ctx *ctx, const char *data, si
 	size_t i;
 	if (len > SSIZE_MAX)
 	{
-		abort();
+		return -EOVERFLOW;
 	}
 	if (ctx->mode == STREAMING_ATOF_MODE_DONE || ctx->mode == STREAMING_ATOF_MODE_ERROR)
 	{
