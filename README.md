@@ -91,6 +91,12 @@ and test it by:
 ./test
 ```
 
+and install it by:
+
+```
+sudo ./install.sh /usr/local
+```
+
 ## License
 
 All of the material related to streaming atof is licensed under the following
