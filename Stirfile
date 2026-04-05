@@ -21,7 +21,7 @@ $(LDFLAGS_DYN) = []
 @phonyrule: 'all': 'libstreamingatof.a' 'libstreamingatof.so' 'libstreamingatof.so.1' $(PROG)
 
 @patrule: $(PROG): '%': '%.o' 'libstreamingatof.a'
-@	[$(CC), @$(CFLAGS), "-o", $@, $<, 'libstreamingatof.a']
+@	[$(CC), @$(CFLAGS), "-o", $@, $<, 'libstreamingatof.a', '-lm']
 
 @patrule: $(OBJ): '%.o': '%.c' '%.d'
 @	[$(CC), @$(CFLAGS), "-c", "-o", $@, $<]
