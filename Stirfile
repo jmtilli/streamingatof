@@ -34,7 +34,7 @@ $(LDFLAGS_DYN) = []
 @	["ar", "rvs", $@, @@suffilter($^, ".o")]
 
 'libstreamingatof.so.1': 'libstreamingatof.a'
-@	[$(CC), @$(CFLAGS), "-shared", "-o", $@, "-Wl,--whole-archive", @@suffilter($^, ".a"), "-Wl,--no-whole-archive", @$(LDFLAGS_DYN), "-lc"]
+@	[$(CC), @$(CFLAGS), "-shared", "-Wl,-soname,".$@, "-o", $@, "-Wl,--whole-archive", @@suffilter($^, ".a"), "-Wl,--no-whole-archive", @$(LDFLAGS_DYN), "-lc"]
 
 'libstreamingatof.so': 'libstreamingatof.so.1'
 @	[$(RM), "-f", $@]
