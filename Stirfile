@@ -3,8 +3,38 @@
 
 @fileinclude @ignore "opts.smk"
 
-$CC ?= "cc"
-$CFLAGS ?= ["-g", "-O2", "-Wall", "-Wextra", "-Wsign-conversion", "-Wno-missing-field-initializers", "-Wno-unused-parameter", "-Wshadow", "-Wstrict-prototypes", "-Wmissing-prototypes", "-Wpointer-arith", "-std=gnu99", "-fPIC"]
+
+$(CC) ?= @nil
+@if(@type($(CC)) == @type(""))
+  $(CC) = [$(CC)]
+@endif
+@if(@type($(CC)) == @type(@nil))
+  $(CC) ``= ["sh", "-c", "echo $CC"]
+  @if($(CC)[] == 0)
+    $(CC) = ["cc"]
+  @endif
+@endif
+
+$MYCFLAGS = ["-g", "-O2", "-Wall", "-Wextra", "-Wsign-conversion", "-Wno-missing-field-initializers", "-Wno-unused-parameter", "-Wshadow", "-Wstrict-prototypes", "-Wmissing-prototypes", "-Wpointer-arith", "-std=gnu99", "-fPIC"]
+
+$(CFLAGS) ?= @nil
+@if(@type($(CFLAGS)) == @type(@nil))
+  $(CFLAGS) ``= ["sh", "-c", "echo $CFLAGS"]
+  @if($(CFLAGS)[] == 0)
+    $(CFLAGS) = $MYCFLAGS
+  @endif
+@endif
+
+# This is mandatory:
+$(CFLAGS) += ["-fPIC"]
+
+$(LDFLAGS) ?= @nil
+@if(@type($(LDFLAGS)) == @type(@nil))
+  $(LDFLAGS) ``= ["sh", "-c", "echo $LDFLAGS"]
+  @if($(LDFLAGS)[] == 0)
+    $(LDFLAGS) = []
+  @endif
+@endif
 
 $(SRC_LIB) = ["streamingatof.c"]
 $(SRC_PROG) = ["test.c"]
@@ -21,20 +51,20 @@ $(LDFLAGS_DYN) = []
 @phonyrule: 'all': 'libstreamingatof.a' 'libstreamingatof.so' 'libstreamingatof.so.1' $(PROG)
 
 @patrule: $(PROG): '%': '%.o' 'libstreamingatof.a'
-@	[$(CC), @$(CFLAGS), "-o", $@, $<, 'libstreamingatof.a', '-lm']
+@	[@$(CC), @$(CFLAGS), @$(LDFLAGS), "-o", $@, $<, 'libstreamingatof.a', '-lm']
 
 @patrule: $(OBJ): '%.o': '%.c' '%.d'
-@	[$(CC), @$(CFLAGS), "-c", "-o", $@, $<]
+@	[@$(CC), @$(CFLAGS), "-c", "-o", $@, $<]
 
 @patrule: $(DEP): '%.d': '%.c'
-@	[$(CC), @$(CFLAGS), "-MM", "-o", $@, $<]
+@	[@$(CC), @$(CFLAGS), "-MM", "-o", $@, $<]
 
 'libstreamingatof.a': $(OBJ_LIB)
 @	["rm", "-f", $@]
 @	["ar", "rvs", $@, @@suffilter($^, ".o")]
 
 'libstreamingatof.so.1': 'libstreamingatof.a'
-@	[$(CC), @$(CFLAGS), "-shared", "-Wl,-soname,".$@, "-o", $@, "-Wl,--whole-archive", @@suffilter($^, ".a"), "-Wl,--no-whole-archive", @$(LDFLAGS_DYN), "-lc"]
+@	[@$(CC), @$(CFLAGS), @$(LDFLAGS), "-shared", "-Wl,-soname,".$@, "-o", $@, "-Wl,--whole-archive", @@suffilter($^, ".a"), "-Wl,--no-whole-archive", @$(LDFLAGS_DYN), "-lc"]
 
 'libstreamingatof.so': 'libstreamingatof.so.1'
 @	[$(RM), "-f", $@]
